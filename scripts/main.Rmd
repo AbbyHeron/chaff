@@ -1,0 +1,70 @@
+---
+title: "main"
+author: "Abby Heron"
+date: "04/11/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      warning = FALSE,
+                      message = FALSE,
+                      fig.retina = 3)
+```
+
+```{r packages}
+library(tidyverse)
+```
+
+```{r importing}
+chaff <- read_table2("https://3mmarand.github.io/BIO00058M-Data-science-2020/data-raw/chaff.txt") %>% 
+  janitor::clean_names()
+
+```
+
+```{r tidying}
+chaff2 <- gather(data = chaff, key = sex, value = max)
+
+```
+
+```{r functions}
+sum_sq <- function(df, measure, group) {
+  df %>% group_by({{ group }}) %>% 
+    summarise(ss = sum(({{measure}} - mean({{measure}}))^2))
+}
+
+sum_sq(chaff2, max, sex)
+
+data_summary <- function(df, measure, group) {
+  df %>% group_by({{ group }}) %>% 
+    summarise(mean_max = mean({{ measure }}),
+            sd = sd({{ measure }}),
+            se = plotrix::std.error({{ measure }}),
+            n = length({{ measure }}))
+}
+
+data_summary(chaff2, max, sex)
+```
+
+```{r summarise}
+chaff_summary <- chaff2 %>% 
+  group_by(sex) %>% 
+  summarise(mean_max = mean(max),
+            sd = sd(max),
+            se = plotrix::std.error(max),
+            n = length(max))
+
+```
+
+
+
+# Introduction
+This is the introduction!!!!
+
+# Methods
+This is the methods!!!
+
+# Results
+
+# Discussion
+
