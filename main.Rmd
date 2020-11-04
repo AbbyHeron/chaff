@@ -56,6 +56,46 @@ chaff_summary <- chaff2 %>%
 
 ```
 
+```{r human index}
+filesol <- "Y101_Y102_Y201_Y202_Y101-5.csv"
+
+#Skip first 2 rows as they dont include important info and tidy
+sol <- read_csv(filesol, skip = 2) %>% 
+  janitor::clean_names()
+
+#Filter the data to keep rows of human proteins identified by more than one peptide
+sol <- sol %>% 
+  filter(str_detect(description, "OS=Homo sapiens")) %>% 
+  filter(x1pep == "x")
+
+#Extract top protein identifier and put in column protid
+sol <- sol %>%
+  mutate(protid =  str_extract(accession, ".::[^|;]+") %>% 
+           str_replace(".::", ""))
+
+#Extract genename from the description and put it into a column
+sol <- sol %>%
+  mutate(genename =  str_extract(description,"GN=[^\\s]+") %>% 
+           str_replace("GN=", ""))
+
+
+#Converting the data to tidy format - giving abundance and lineage_rep their own column
+sol2 <- sol %>% 
+  pivot_longer(names_to = "lineage_rep",
+               values_to = "abundance",
+               cols = -c(accession, peptide_count, unique_peptides, confidence_score, anova_p, q_value,
+                         max_fold_change, power, highest_mean_condition, lowest_mean_condition, mass, description, x1pep, genename, protid))
+
+#Creating unique columns for lineage and rep
+sol3 <- sol2 %>% 
+  extract(lineage_rep, 
+          c("lineage", "rep"),
+          "(y[0-9]{3,4})\\_([a-z])")
+
+
+sol3
+```
+
 
 
 # Introduction
