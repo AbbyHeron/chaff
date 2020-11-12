@@ -2,7 +2,12 @@
 title: "main"
 author: "Abby Heron"
 date: "04/11/2020"
-output: html_document
+output:
+  bookdown::html_document2: default
+  bookdown::pdf_document2: default
+  bookdown::word_document2: default
+bibliography: reference.bib
+  
 ---
 
 ```{r setup, include=FALSE}
@@ -14,6 +19,7 @@ knitr::opts_chunk$set(echo = FALSE,
 
 ```{r packages}
 library(tidyverse)
+library(ggplot2)
 ```
 
 ```{r importing}
@@ -99,12 +105,41 @@ sol3
 
 
 # Introduction
-This is the introduction!!!!
+This is the introduction!!!! [@tidyverse] [@rcore]
+
+This is a bird.\@ref(fig:chaff-fig)
+
+(ref:chaff-fig) Chaff. By Photo © Julia Trafford, http://voice.gardenbird.co.uk/all-about-the-chaffinch/
+```{r chaff-fig, out.height="200px", fig.cap='(ref:chaff-fig)'}
+knitr::include_graphics("photo.png")
+# Import image into the knit - automatically names the figure so doesnt need to be
+# changed if more figures are added later
+# This is done by giving the chunk a name (r weddell-fig) and caption (fig.cap='(ref:weddell-fig)')
+#(fig.cap='(ref:weddell-fig)') is used so that the whole legend does not have to be typed out each time
+#The legend is above (outside the chunk) with the name (ref:weddell-fig) - this is then used instead of the legend text
+```
+
 
 # Methods
-This is the methods!!!
+This is the methods!!! 
 
 # Results
+```{r statistical analysis}
+data_summary(chaff2, max, sex)
+t.test(data = chaff2, max~sex)
+```
+this is figure \@ref(fig:max-fig)
+```{r max-fig, fig.height=4, fig.width=4, fig.cap="(ref:max-fig)"}
+
+ggplot() +
+  geom_point(data = chaff2, aes(x = sex, y = max),
+             position = position_jitter(width = 0.1, height = 0),
+             colour = "gray50")+
+  theme_classic()
+
+```
+
 
 # Discussion
 
+# References
